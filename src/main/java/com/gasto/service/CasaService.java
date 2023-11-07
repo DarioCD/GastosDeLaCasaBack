@@ -1,5 +1,7 @@
 package com.gasto.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,9 @@ public class CasaService {
 	
 	public Casa save(Casa casa) {
 		try {
-			return casaRepository.save(casa);
+			String codigoAleatorio = UUID.randomUUID().toString();
+            casa.setCodigo(codigoAleatorio);
+            return casaRepository.save(casa);
 		} catch (Exception e) {
 			return null;
 		}

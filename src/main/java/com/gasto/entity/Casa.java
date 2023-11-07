@@ -24,7 +24,7 @@ public class Casa {
 	private String nombre;
 
 	@Column
-	private String password;
+	private String codigo;
 
 	@OneToMany(mappedBy = "casa")
 	private List<Usuario> usuarios;
@@ -32,6 +32,9 @@ public class Casa {
 	@Column
 	private float disponible;
 	
+	@OneToMany(mappedBy = "casa")
+	private List<Gasto> gastos;
+
 	
 
 }
