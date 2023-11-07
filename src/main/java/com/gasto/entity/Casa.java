@@ -33,7 +33,7 @@ public class Casa {
 	private float disponible;
 	
 	@OneToMany(mappedBy = "casa")
-	private List<Gasto> gastos;
+	private List<Estadistica> estadisticas;
 
 	
 

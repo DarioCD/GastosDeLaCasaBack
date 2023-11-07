@@ -21,9 +21,9 @@ public class GastoController {
 	@Autowired
 	GastoService gastoService;
 
-	@PostMapping("/gasto")
-	public ResponseEntity<Gasto> addGasto(@RequestBody Gasto gasto) {
-		return gastoService.addGasto(gasto);
+	@PostMapping("/gasto/casa/{idCasa}")
+	public Gasto addGasto(@RequestBody Gasto gasto, @PathVariable Long idCasa) {
+		return gastoService.addGasto(gasto, idCasa);
 	}
 	@PutMapping("/gasto/{idGasto}/categoria/{idCategoria}")
 	public ResponseEntity<?> addGastoToCategoria(@PathVariable Long idGasto, @PathVariable Long idCategoria) {

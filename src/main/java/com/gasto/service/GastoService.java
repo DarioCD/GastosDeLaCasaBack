@@ -1,6 +1,10 @@
 package com.gasto.service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,10 +14,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.gasto.entity.Casa;
 import com.gasto.entity.Categoria;
+import com.gasto.entity.Estadistica;
 import com.gasto.entity.Gasto;
 import com.gasto.repository.CasaRepository;
 import com.gasto.repository.CategoriaRepository;
+import com.gasto.repository.EstadisticaRepository;
 import com.gasto.repository.GastoRepository;
 
 @Service
@@ -28,12 +35,46 @@ public class GastoService {
 	@Autowired
 	CasaRepository casaRepository;
 
-	public ResponseEntity<Gasto> addGasto(Gasto gasto) {
+	@Autowired
+	EstadisticaRepository estadisticaRepository;
+
+	@Autowired
+	EstadisticaService estadisticaService;
+
+	public Gasto addGasto(Gasto gasto, Long idCasa) {
+
 		try {
-			return new ResponseEntity<>(gastoRepository.save(gasto), HttpStatus.OK);
+
+			LocalDate fechaActual = LocalDate.now();
+			YearMonth yearMonth = YearMonth.from(fechaActual);
+			int year = yearMonth.getYear();
+			int month = yearMonth.getMonthValue();
+
+			Optional<Casa> casaOptional = casaRepository.findById(idCasa);
+
+			if (casaOptional.isPresent()) {
+				Casa casa = casaOptional.get();
+
+				// Obtener las estadísticas asociadas a la casa
+				List<Estadistica> estadisticas = casa.getEstadisticas();
+
+				// Filtrar las estadísticas para encontrar la del mes actual
+				Estadistica estadisticaActual = estadisticas.stream().filter(estadistica -> {
+					YearMonth estadisticaYearMonth = YearMonth.from(estadistica.getFecha());
+					return estadisticaYearMonth.getYear() == year && estadisticaYearMonth.getMonthValue() == month;
+				}).findFirst().orElse(null);
+
+				gasto.getEstadisticas().add(estadisticaActual);
+
+				return gastoRepository.save(gasto);
+			} else {
+				return null;
+			}
+
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			throw e;
 		}
+
 	}
 
 	public ResponseEntity<?> addGastoToCategoria(Long idGasto, Long idCategoria) {
