@@ -14,27 +14,27 @@ import lombok.Data;
 @Table(name = "Usuario")
 @Data
 public class Usuario {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idUsuario;
-	
+
 	@Column
 	private String email;
-	
+
 	@Column
 	private String password;
-	
+
 	@Column
 	private String nombre;
-	
+
 	@Column
 	private String apellidos;
-	
+
 	@Column
 	private float sueldo;
 	@ManyToOne
-    @JoinColumn(name = "casa_id")
-    private Casa casa;
+	@JoinColumn(name = "casa_id")
+	private Casa casa;
 
 }

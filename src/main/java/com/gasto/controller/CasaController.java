@@ -1,6 +1,7 @@
 package com.gasto.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class CasaController {
 	CasaService casaService;
 
 	@PostMapping("/casa")
-	public Casa save(@RequestBody Casa casa) {
+	public ResponseEntity<?> save(@RequestBody Casa casa) {
 		return casaService.save(casa);
 	}
 

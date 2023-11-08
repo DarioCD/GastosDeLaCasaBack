@@ -1,8 +1,12 @@
 package com.gasto.service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.gasto.entity.Casa;
@@ -19,15 +23,31 @@ public class UsuarioService {
 	@Autowired
 	CasaRepository casaRepository;
 
-	public Usuario save(Usuario usuario) {
+	public ResponseEntity<?> save(Usuario usuario) {
+		Map<String, Object> response = new HashMap<>();
+		
+		Optional<Usuario> _usuario = usuarioRepository.findByEmail(usuario.getEmail());
+		
 		try {
-			return usuarioRepository.save(usuario);
+			
+			if (_usuario.isEmpty()) {
+				usuarioRepository.save(usuario);
+				response.put("message", usuario);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			}else {
+				response.put("message", "El correo " + usuario.getEmail() + " ya está en uso");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
 		} catch (Exception e) {
-			return null;
+			response.put("message", "Error al crear el usuario");
+			response.put("error", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	public Float updateSueldo(float sueldo, Long idUsuario) {
+	public ResponseEntity<?> updateSueldo(float sueldo, Long idUsuario) {
+
+		Map<String, Object> response = new HashMap<>();
 
 		Optional<Usuario> _usuario = usuarioRepository.findById(idUsuario);
 
@@ -43,15 +63,22 @@ public class UsuarioService {
 			}
 			usuarioRepository.save(newUsuario);
 
-			return newUsuario.getSueldo();
+			response.put("message", "Se actualizó correctamnte el sueldo de " + _usuario.get().getSueldo() + " a "
+					+ newUsuario.getSueldo());
+
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
-		return null;
+		response.put("message", "Error al actualizar el sueldo");
+
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
-	public String addUsuarioToCasa(Long idUsario, Long idCasa) {
+	public ResponseEntity<?> addUsuarioToCasa(Long idUsario, Long idCasa) {
 
 		Optional<Usuario> _usuario = usuarioRepository.findById(idUsario);
 		Optional<Casa> _casa = casaRepository.findById(idCasa);
+
+		Map<String, Object> response = new HashMap<>();
 
 		if (_usuario.isPresent()) {
 			if (_casa.isPresent()) {
@@ -66,11 +93,20 @@ public class UsuarioService {
 				usuarioRepository.save(newUsuario);
 				casaRepository.save(newCasa);
 
-				return newUsuario.getNombre() + " " + newUsuario.getApellidos() + " se añadió con éxtio a "
-						+ newCasa.getNombre();
+				response.put("message", newUsuario.getNombre() + " " + newUsuario.getApellidos()
+						+ " se añadió con éxtio a " + newCasa.getNombre());
+
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			} else {
+				response.put("message", "La casa no existe");
+
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
+		} else {
+			response.put("message", "El usuario no existe");
+
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
-		return "Error al añadir usuario a casa ";
 
 	}
 

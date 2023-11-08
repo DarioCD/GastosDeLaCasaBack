@@ -1,9 +1,13 @@
 package com.gasto.service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.gasto.entity.Casa;
@@ -24,7 +28,8 @@ public class CasaService {
 	@Autowired
 	EstadisticaRepository estadisticaRepository;
 
-	public Casa save(Casa casa) {
+	public ResponseEntity<?> save(Casa casa) {
+		Map<String, Object> response = new HashMap<>();
 		try {
 			String codigoAleatorio = UUID.randomUUID().toString();
 			casa.setCodigo(codigoAleatorio);
@@ -37,10 +42,14 @@ public class CasaService {
 			estadistica.setFecha(LocalDate.now());
 
 			estadisticaRepository.save(estadistica);
+			
+			response.put("message", savedCasa);
 
-			return savedCasa;
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception e) {
-			return null;
+			response.put("message", "Error al crear la casa");
+			response.put("error", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 }
