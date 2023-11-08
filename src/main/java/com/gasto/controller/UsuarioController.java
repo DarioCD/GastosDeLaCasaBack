@@ -22,7 +22,7 @@ public class UsuarioController {
 	@Autowired
 	UsuarioService usuarioService;
 	
-	@PostMapping("/usuario")
+	@PostMapping("/register/usuario")
 	public ResponseEntity<?> save (@RequestBody Usuario usuario) {
 		return usuarioService.save(usuario);
 	}
@@ -32,9 +32,9 @@ public class UsuarioController {
 		return usuarioService.updateSueldo(sueldo, idUsuario);
 	}
 	
-	@PutMapping("/usuario/addUsuarioToCasa/{idUser}/{idCasa}")
-	public ResponseEntity<?> addUsuarioToCasa (@PathVariable Long idUser, @PathVariable Long idCasa) {
-		return usuarioService.addUsuarioToCasa(idUser, idCasa);
+	@PutMapping("/usuario/{idUsuario}/codigo/{codigo}")
+	public ResponseEntity<?> addUsuarioToCasa (@PathVariable Long idUsuario, @PathVariable String codigo) {
+		return usuarioService.addUsuarioToCasa(idUsuario, codigo);
 	}
 
 }
