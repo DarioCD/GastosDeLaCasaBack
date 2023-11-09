@@ -2,8 +2,8 @@
 INSERT INTO gastoscasa.casa (id_casa, nombre, codigo, disponible) VALUES (1, "Casa", "123456", 1221);
 
 /* Crear usuarios */
-INSERT INTO gastoscasa.usuario (id_usuario, casa_id, nombre, apellidos, email, password, sueldo) VALUES (1, 1, "Dario", "Chinea Delgado","dariocd0808@gmail.com","1234", 1221);
-INSERT INTO gastoscasa.usuario (id_usuario, casa_id, nombre, apellidos, email, password, sueldo) VALUES (2, 1, "Eridania", "Diaz Garcia","erinadinadiazgarcia33@gmail.com","1234", 1400);
+INSERT INTO gastoscasa.usuario (id_usuario, casa_id, nombre, apellidos, email, password, sueldo) VALUES (1, 1, "Dario", "Chinea Delgado","dariocd0808@gmail.com","$2a$10$mMTpWgYXa7Kmcs0NzMmMrOka45/784JkQXvMGdnZsJe0cxzF.KevW", 1221);
+INSERT INTO gastoscasa.usuario (id_usuario, casa_id, nombre, apellidos, email, password, sueldo) VALUES (2, 1, "Eridania", "Diaz Garcia","erinadinadiazgarcia33@gmail.com","$2a$10$mMTpWgYXa7Kmcs0NzMmMrOka45/784JkQXvMGdnZsJe0cxzF.KevW", 1400);
 
 /* Crear estadística */
 INSERT INTO gastoscasa.estadistica (fecha, id_casa, id_estadistica) VALUES ("2023-10-08", 1, 1);

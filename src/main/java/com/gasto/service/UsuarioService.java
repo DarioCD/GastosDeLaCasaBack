@@ -5,18 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gasto.entity.Casa;
 import com.gasto.entity.Usuario;
 import com.gasto.repository.CasaRepository;
 import com.gasto.repository.UsuarioRepository;
-import com.google.gson.Gson;
 
 @Service
 public class UsuarioService {
@@ -146,21 +145,24 @@ public class UsuarioService {
 		}
 
 	}
-	
-	public MiClase decodeToken (String token) {
+
+	public ResponseEntity<?> decodeToken(String token) {
+
+		Map<String, Object> response = new HashMap<>();
+
 		String[] chunks = token.split("\\.");
 
-	    Base64.Decoder decoder = Base64.getUrlDecoder();
-	    String jsonPayload = new String(decoder.decode(chunks[1]));
+		Base64.Decoder decoder = Base64.getUrlDecoder();
+		String jsonPayload = new String(decoder.decode(chunks[1]));
 
-	    try {
-	        ObjectMapper objectMapper = new ObjectMapper();
-	        return objectMapper.readValue(jsonPayload, MiClase.class);
-	    } catch (Exception e) {
-	        // Manejar excepciones si ocurren errores al analizar el JSON
-	        e.printStackTrace();
-	        return null;
-	    }
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			response.put("message", objectMapper.readValue(jsonPayload, MiClase.class));
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (Exception e) {
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	public ResponseEntity<?> addUsuarioToCasa(Long idUsario, String codigocasa) {

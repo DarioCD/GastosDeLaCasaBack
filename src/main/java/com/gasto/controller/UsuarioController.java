@@ -39,7 +39,7 @@ public class UsuarioController {
 		return usuarioService.addUsuarioToCasa(idUsuario, codigo);
 	}
 	
-	@GetMapping("/usuario/check")
+	@PostMapping("/usuario/check")
 	public ResponseEntity<?> checkUsuario(@RequestBody Usuario usuario) {
 		return usuarioService.checkUsuario(usuario);
 	}
@@ -49,8 +49,8 @@ public class UsuarioController {
 		return usuarioService.checkUsuarioEncriptado(usuario);
 	}
 	
-	@GetMapping("/usuario/decode/token")
-	public MiClase checkUsuarioEncriptado(@RequestBody String token) {
+	@PostMapping("/usuario/decode/token")
+	public ResponseEntity<?> checkUsuarioEncriptado(@RequestBody String token) {
 		return usuarioService.decodeToken(token);
 	}
 }
