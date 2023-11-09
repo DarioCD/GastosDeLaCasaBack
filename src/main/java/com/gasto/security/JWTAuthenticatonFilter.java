@@ -41,7 +41,15 @@ public class JWTAuthenticatonFilter extends UsernamePasswordAuthenticationFilter
 
 		String token = TokenUtils.createToken(userDetails.getNombre(), userDetails.getUsername());
 
-		response.addHeader("AuthorizationR", "Bearer " + token);
+		response.addHeader("Authorization", "Bearer " + token);
+		// Crear un JSON manualmente como una cadena de caracteres
+		String jsonResponse = "{\"token\":\"Bearer " + token + "\"}";
+
+		// Establecer el tipo de contenido JSON y escribir el JSON en el cuerpo de la
+		// respuesta
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(jsonResponse);
 
 		response.getWriter().flush();
 

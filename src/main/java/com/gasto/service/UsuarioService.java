@@ -1,19 +1,22 @@
 package com.gasto.service;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gasto.entity.Casa;
 import com.gasto.entity.Usuario;
 import com.gasto.repository.CasaRepository;
 import com.gasto.repository.UsuarioRepository;
+import com.google.gson.Gson;
 
 @Service
 public class UsuarioService {
@@ -87,6 +90,77 @@ public class UsuarioService {
 		response.put("message", "Error al actualizar el sueldo");
 
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	public ResponseEntity<?> checkUsuario(Usuario busuario) {
+		Map<String, Object> response = new HashMap<>();
+
+		Optional<Usuario> _usuario = usuarioRepository.findOneByEmail(busuario.getEmail());
+
+		try {
+			if (_usuario.isPresent()) {
+				Usuario usuario = _usuario.get();
+
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+				if (passwordEncoder.matches(busuario.getPassword(), usuario.getPassword())) {
+					response.put("message", "Contraseña correcta");
+					return new ResponseEntity<>(response, HttpStatus.OK);
+				} else {
+					response.put("message", "Contraseña incorrecta");
+					return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+				}
+			} else {
+				response.put("message", "El correo no está registrado");
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public ResponseEntity<?> checkUsuarioEncriptado(Usuario busuario) {
+
+		Map<String, Object> response = new HashMap<>();
+
+		Optional<Usuario> _usuario = usuarioRepository.findOneByEmail(busuario.getEmail());
+
+		try {
+			if (_usuario.isPresent()) {
+
+				Usuario usuario = _usuario.get();
+
+				if (usuario.getPassword().equals(busuario.getPassword())) {
+					response.put("message", usuario);
+					return new ResponseEntity<>(response, HttpStatus.OK);
+				} else {
+					response.put("message", "La contraseña no coincide");
+					return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+				}
+			} else {
+				response.put("message", "El correo no esta registrado");
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+	
+	public MiClase decodeToken (String token) {
+		String[] chunks = token.split("\\.");
+
+	    Base64.Decoder decoder = Base64.getUrlDecoder();
+	    String jsonPayload = new String(decoder.decode(chunks[1]));
+
+	    try {
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        return objectMapper.readValue(jsonPayload, MiClase.class);
+	    } catch (Exception e) {
+	        // Manejar excepciones si ocurren errores al analizar el JSON
+	        e.printStackTrace();
+	        return null;
+	    }
 	}
 
 	public ResponseEntity<?> addUsuarioToCasa(Long idUsario, String codigocasa) {

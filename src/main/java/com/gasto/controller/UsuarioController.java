@@ -3,6 +3,7 @@ package com.gasto.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gasto.entity.Usuario;
+import com.gasto.service.MiClase;
 import com.gasto.service.UsuarioService;
 
 @CrossOrigin(origins = "*")
@@ -36,5 +38,19 @@ public class UsuarioController {
 	public ResponseEntity<?> addUsuarioToCasa (@PathVariable Long idUsuario, @PathVariable String codigo) {
 		return usuarioService.addUsuarioToCasa(idUsuario, codigo);
 	}
-
+	
+	@GetMapping("/usuario/check")
+	public ResponseEntity<?> checkUsuario(@RequestBody Usuario usuario) {
+		return usuarioService.checkUsuario(usuario);
+	}
+	
+	@GetMapping("/usuario/check/encriptado")
+	public ResponseEntity<?> checkUsuarioEncriptado(@RequestBody Usuario usuario) {
+		return usuarioService.checkUsuarioEncriptado(usuario);
+	}
+	
+	@GetMapping("/usuario/decode/token")
+	public MiClase checkUsuarioEncriptado(@RequestBody String token) {
+		return usuarioService.decodeToken(token);
+	}
 }
