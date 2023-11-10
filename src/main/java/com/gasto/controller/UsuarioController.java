@@ -49,6 +49,11 @@ public class UsuarioController {
 		return usuarioService.checkUsuarioEncriptado(usuario);
 	}
 	
+	@PostMapping("/usuario/email")
+	public Usuario getUsuarioByEmail(@RequestBody Usuario usuario) {
+		return usuarioService.getUsuarioByEmail(usuario);
+	}
+	
 	@PostMapping("/usuario/decode/token")
 	public ResponseEntity<?> checkUsuarioEncriptado(@RequestBody String token) {
 		return usuarioService.decodeToken(token);

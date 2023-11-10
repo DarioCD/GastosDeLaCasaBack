@@ -54,8 +54,8 @@ public class UsuarioService {
 		}
 	}
 
-	public Usuario getUsuarioByEmail(String email) {
-		Optional<Usuario> _usuario = usuarioRepository.findOneByEmail(email);
+	public Usuario getUsuarioByEmail(Usuario usuario) {
+		Optional<Usuario> _usuario = usuarioRepository.findOneByEmail(usuario.getEmail());
 		if (_usuario.isPresent()) {
 			return _usuario.get();
 		} else {
@@ -103,7 +103,7 @@ public class UsuarioService {
 				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 				if (passwordEncoder.matches(busuario.getPassword(), usuario.getPassword())) {
-					response.put("message", "Contraseña correcta");
+					response.put("message", usuario);
 					return new ResponseEntity<>(response, HttpStatus.OK);
 				} else {
 					response.put("message", "Contraseña incorrecta");
